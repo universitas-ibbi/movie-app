@@ -61,7 +61,7 @@
             .map(film => {
                 listFilm.innerHTML += `
                     <div class="col-md-3">
-                        <a href="detail-film.html" class="text-decoration-none text-dark">
+                        <a href="detail-film.html?judul=${film.judul.toLowerCase().replaceAll(' ','_')}" class="text-decoration-none text-dark">
                             <div class="card">
                                 <img src="./images/${film.judul.toLowerCase().replaceAll(' ','_')}.jpeg" 
                                     class="card-img-top" alt="...">

@@ -81,6 +81,7 @@
 
     <script>
         let films = [];
+        let isNew = true;
 
         document.addEventListener("DOMContentLoaded",function(){
             films = JSON.parse(localStorage.getItem("films"));
@@ -89,6 +90,30 @@
 
             tampilListFilm();
         });
+
+        function hapusFilm(judul){
+            const filmIndex = films.findIndex(function(film){
+                return film.judul === judul
+            });
+            films.splice(filmIndex,1);
+
+            localStorage.setItem("films",JSON.stringify(films));
+
+            tampilListFilm();
+        }
+
+        function rubahFilm(judul){
+            const film = films.find(function(film) {
+                return film.judul === judul;
+            })
+
+            document.getElementById("txtJudul").value = film.judul;
+            document.getElementById("txtRating").value = film.rating;
+            document.getElementById("txtSinopsis").value = film.sinopsis;
+            document.getElementById("slctKota").value = film.kota;
+
+            isNew = false;
+        }
 
         function tampilListFilm(){
             const listFilm = document.getElementById("list-film");
@@ -102,8 +127,8 @@
                         <td>${film.rating}</td>
                         <td>${film.sinopsis}</td>
                         <td>${film.kota}</td>
-                        <td><button class="btn btn-warning">Rubah</button></td>
-                        <td><button class="btn btn-danger">Hapus</button></td>
+                        <td><button class="btn btn-warning" onclick="rubahFilm('${film.judul}')">Rubah</button></td>
+                        <td><button class="btn btn-danger" onClick="hapusFilm('${film.judul}')">Hapus</button></td>
                     </tr>
                 `
             })
@@ -119,12 +144,27 @@
                 const kota = document.getElementById("slctKota");
 
                 // [...kota.options].filter(option => option.selected).map(option => option.value)
-                films.push({
-                    judul: judul.value,
-                    rating: rating.value,
-                    sinopsis: sinopsis.value,
-                    kota: [...kota.options].filter(option => option.selected).map(option => option.value)
-                });
+                if(isNew){
+                    films.push({
+                        judul: judul.value,
+                        rating: rating.value,
+                        sinopsis: sinopsis.value,
+                        kota: [...kota.options].filter(option => option.selected).map(option => option.value)
+                    });
+                }else{
+                    const filmIndex = films.findIndex(function(film) {
+                        return film.judul === judul.value;
+                    });
+                    films[filmIndex] = {
+                        ...films[filmIndex],
+                        judul: judul.value,
+                        rating: rating.value,
+                        sinopsis: sinopsis.value,
+                        kota: [...kota.options].filter(option => option.selected).map(option => option.value)
+                    };
+
+                    isNew = true;
+                }
 
                 localStorage.setItem("films",JSON.stringify(films));
 
